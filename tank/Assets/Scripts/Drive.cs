@@ -5,33 +5,23 @@ using System.Collections;
 
 public class Drive : MonoBehaviour
 {   
-    Vector2 up = new Vector2(0, 1);
-    Vector2 right = new Vector2(1, 0);
-    float speed = 0.2f;
+    float speed = 5;
+    float stopping = 0.01f;
+    public GameObject fuel;
+    Vector3 direction;
 
+    private void Start() 
+    {
+        direction = fuel.transform.position - this.transform.position;
+        Coords dirNormal = HolisticMath.GetNormal(new Coords(direction));
+        direction = dirNormal.ToVector();
+    }
     void Update()
     {
-        Vector3 position = this.transform.position;
-        if (Input.GetKey(KeyCode.UpArrow))
+        if (HolisticMath.Distance(new Coords(this.transform.position),
+                                new Coords(fuel.transform.position)) > stopping)
         {
-            position.x += up.x * speed;
-            position.y += up.y * speed;
+            this.transform.position += direction * speed * Time.deltaTime;
         }
-        else if (Input.GetKey(KeyCode.DownArrow))
-        {
-            position.x += -up.x * speed;
-            position.y += -up.y * speed;
-        }
-        else if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            position.x += -right.x * speed;
-            position.y += -right.y * speed;
-        }
-        else if (Input.GetKey(KeyCode.RightArrow))
-        {
-            position.x += right.x * speed;
-            position.y += right.y * speed;
-        }
-        this.transform.position = position;
     }
 }

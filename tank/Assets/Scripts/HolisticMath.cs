@@ -42,6 +42,20 @@ public class HolisticMath : MonoBehaviour
         return Mathf.Acos(dotDivide); // Radians - Deg * 180/pi
     }
 
+    static public Coords LookAt2D(Coords forwardVector, Coords position, Coords focusPoint)
+    {
+        Coords direction = new Coords(focusPoint.x - position.x, focusPoint.y - position.y, position.z);
+        float angle = HolisticMath.Angle(forwardVector, direction);
+        bool clockwise = false;
+        if(HolisticMath.Cross(forwardVector, direction).z < 0)
+        {
+            clockwise = true;
+        }
+        Coords newDir = HolisticMath.Rotate(forwardVector, angle, clockwise);
+        print(newDir);
+        return newDir;
+    }
+
     static public Coords Rotate(Coords vector, float angle, bool clockwise) // Radians
     {
         if(clockwise)

@@ -6,7 +6,7 @@ using System.Collections;
 public class Drive : MonoBehaviour
 {   
     float speed = 5;
-    float stopping = 0.01f;
+    float stopping = 0.05f;
     public GameObject fuel;
     Vector3 direction;
 
@@ -15,10 +15,21 @@ public class Drive : MonoBehaviour
         direction = fuel.transform.position - this.transform.position;
         Coords dirNormal = HolisticMath.GetNormal(new Coords(direction));
         direction = dirNormal.ToVector();
+        float a = HolisticMath.Angle(new Coords(this.transform.up), new Coords(direction));
+
+        bool clockwise = false;
+
+        if(HolisticMath.Cross(new Coords(this.transform.up), dirNormal).z < 0)
+        {
+            clockwise = true;
+        }
+
+        Coords newDir = HolisticMath.Rotate(new Coords(this.transform.up), a, clockwise);
+        this.transform.up = new Vector3(newDir.x, newDir.y, newDir.z);
     }
     void Update()
     {
-        if (HolisticMath.Distance(new Coords(this.transform.position),
+        if(HolisticMath.Distance(new Coords(this.transform.position),
                                 new Coords(fuel.transform.position)) > stopping)
         {
             this.transform.position += direction * speed * Time.deltaTime;
